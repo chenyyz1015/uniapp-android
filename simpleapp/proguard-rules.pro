@@ -96,6 +96,84 @@
 -keep class io.dcloud.PandoraEntryActivity { *; }
 -keep class io.dcloud.application.** { *; }
 
+# 保留 DCloud 非 io.dcloud 包名下的类 (com.dcloud.*)
+# 注意: com.dcloud ≠ io.dcloud，当前 io.dcloud.** 规则不匹配此包
+-keep class com.dcloud.** { *; }
+-keepclassmembers class com.dcloud.** { *; }
+-dontwarn com.dcloud.**
+
+# 保留 DCloud adapter (io.src.dcloud.* 也不匹配 io.dcloud.**)
+-keep class io.src.dcloud.** { *; }
+-dontwarn io.src.dcloud.**
+
+# 保留 DCloud 重打包的 OkHttp/OkIO (dc.squareup.*)
+-keep class dc.squareup.okhttp3.** { *; }
+-keep interface dc.squareup.okhttp3.** { *; }
+-dontwarn dc.squareup.okhttp3.**
+-keep class dc.squareup.okio.** { *; }
+-dontwarn dc.squareup.okio.**
+
+# 保留 DCloud 重打包的 OkHttp Cookie (dc.squareup.cookie.*)
+-keep class dc.squareup.cookie.** { *; }
+-dontwarn dc.squareup.cookie.**
+
+# 保留 Weex 框架 (uniapp-v8-release.aar)
+# Weex 是 uni-app V8 引擎的核心渲染框架，大量 JNI + 反射调用
+-keep class com.taobao.weex.** { *; }
+-keepclassmembers class com.taobao.weex.** { *; }
+-dontwarn com.taobao.weex.**
+
+# 保留 Weex JNI 绑定的 native 方法
+-keepclasseswithmembernames class com.taobao.weex.** {
+    native <methods>;
+}
+
+# 保留 Weex 反射调用的桥接方法
+-keepclassmembers class com.taobao.weex.bridge.** {
+    public <methods>;
+    public <init>(...);
+}
+
+# 保留 BindingX 手势库 (uniapp-v8-release.aar 内嵌 JAR)
+-keep class com.alibaba.android.bindingx.** { *; }
+-dontwarn com.alibaba.android.bindingx.**
+
+# 保留 DCloud ImageLoader (lib.5plus.base-release.aar 内嵌 JAR)
+-keep class com.nostra13.dcloudimageloader.** { *; }
+-dontwarn com.nostra13.dcloudimageloader.**
+
+# 保留 NineOldAndroids (lib.5plus.base-release.aar 内嵌 JAR)
+-keep class io.dcloud.nineoldandroids.** { *; }
+-dontwarn io.dcloud.nineoldandroids.**
+
+# 保留 Android Transcoder 视频转码
+-keep class androidtranscoder.** { *; }
+-dontwarn androidtranscoder.**
+
+# 保留 DCloud MediaPicker 媒体选择
+-keep class com.dmcbig.mediapicker.** { *; }
+-dontwarn com.dmcbig.mediapicker.**
+
+# 保留字符编码检测
+-keep class org.mozilla.universalchardet.** { *; }
+-dontwarn org.mozilla.universalchardet.**
+
+# 保留 Breakpad 崩溃上报 JNI
+-keep class com.sample.breakpad.** { *; }
+-keepclasseswithmembernames class com.sample.breakpad.** {
+    native <methods>;
+}
+-dontwarn com.sample.breakpad.**
+
+# ============================================================
+# 确保所有 AAR 内嵌类库的 JNI 方法不被混淆
+# ============================================================
+
+# 保留所有 jni/ 目录下 .so 文件对应的 JNI native 方法
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
 # 保留 DCloud Feature 实现类 (dcloud_properties.xml 中通过全类名字符串反射加载)
 -keep class io.dcloud.feature.barcode2.** { *; }
 -keep class io.dcloud.js.map.amap.** { *; }
