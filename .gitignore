@@ -1,0 +1,26 @@
+# 签名文件
+*.jks
+*.keystore
+*.key
+
+# local.properties 包含敏感信息
+local.properties
+
+# Android 构建产物
+.gradle/
+local.properties
+.idea/
+.DS_Store
+build/
+release/
+captures/
+.externalNativeBuild
+.cxx/
+*.apk
+*.aab
+
+**/src/main/assets/apps/**
+
+# 其他
+*.log
+*.tmp

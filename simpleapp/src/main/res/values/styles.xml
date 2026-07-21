@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DCloudActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorEdgeEffect">#333333</item>
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
+    <style name="DCloudTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- 状态栏透明 -->
+        <item name="android:windowTranslucentStatus">true</item>
+        <!-- 导航栏透明 -->
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+</resources>
