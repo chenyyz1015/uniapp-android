@@ -338,7 +338,7 @@ simpleapp/libs/debug-server-release.aar
 
 ### 调试步骤
 
-1. 用 Android Studio 打开本工程，启动模拟器并运行自定义基座 APK
+1. 用 Android Studio 打开本工程，生成自定义基座 APK，打开 HBuilderX，在对应 uni-app 项目 unpackage 目录下创建 debug 目录，将上述生成的 APK 文件拷贝到 debug 目录中，并重命名文件为 android_debug.apk
 2. 打开 HBuilderX，打开对应 uni-app 项目
 3. 菜单栏 → **运行** → **运行到手机或模拟器** → **运行到 Android App 基座**
 4. 在弹出的窗口中选择正在运行基座的模拟器，等待连接成功
