@@ -1,5 +1,5 @@
-<msc debug="true" syncDebug="true" version="5.15">
+<Hbuilder debug="true" syncDebug="true" version="5.15">
     <apps>
         <app appid="__UNI__1B79CDB" appver="1.0.0"/>
     </apps>
-</msc>
+</Hbuilder>

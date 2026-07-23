@@ -52,11 +52,11 @@ java -version
 位置：`simpleapp/src/main/assets/data/dcloud_control.xml`
 
 ```xml
-<msc debug="true" syncDebug="true" version="5.15">
+<Hbuilder debug="true" syncDebug="true" version="5.15">
     <apps>
         <app appid="__UNI__1B79CDB" appver="1.0.0"/>
     </apps>
-</msc>
+</Hbuilder>
 ```
 
 | 属性        | 说明                                                         |
@@ -304,11 +304,11 @@ adb install simpleapp/release/simpleapp-release.apk
 在 `dcloud_control.xml` 中设置 `debug` 和 `syncDebug` 属性为 `true`：
 
 ```xml
-<msc debug="true" syncDebug="true" version="5.15">
+<Hbuilder debug="true" syncDebug="true" version="5.15">
     <apps>
         <app appid="__UNI__1B79CDB" appver="1.0.0"/>
     </apps>
-</msc>
+</Hbuilder>
 ```
 
 | 属性        | 说明                                                    |
