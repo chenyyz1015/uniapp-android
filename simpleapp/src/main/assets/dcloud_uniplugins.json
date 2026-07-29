@@ -1,0 +1,18 @@
+{
+  "nativePlugins": [
+    {
+      "plugins": [
+        {
+          "type": "module",
+          "name": "TencentCloud-TUICallKit",
+          "class": "com.tencent.qcloud.uniplugin.TUICallKitModule"
+        },
+        {
+          "type": "module",
+          "name": "TencentCloud-TUICallKit-TUICallEngine",
+          "class": "com.tencent.qcloud.uniplugin.TUICallEngineModule"
+        }
+      ]
+    }
+  ]
+}
