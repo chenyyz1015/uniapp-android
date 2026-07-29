@@ -13,13 +13,21 @@ export interface EnableOptions {
   incomingBanner?: boolean;
 }
 
-/** 来电铃声（枚举值） */
+/** 通话方式 */
+export enum CallMediaType {
+  /** 语音通话 */
+  VOICE = 1,
+  /** 视频通话 */
+  VIDEO = 2,
+}
+
+/** 来电铃声 */
 export enum CallingBell {
   ringing = "ringing",
   dialing = "dialing",
 }
 
-/** 来电铃声 */
+/** 来电铃声（音频） */
 export const CallingBellMap: Record<CallingBell, string> = {
   ringing: Ringing,
   dialing: Dialing,
@@ -30,6 +38,37 @@ export const CallingBellNameMap: Record<CallingBell, string> = {
   ringing: "Ringing",
   dialing: "Dialing",
 };
+
+/** 视频分辨率 */
+export enum VideoResolution {
+  /** 宽高比 16:9，分辨率 640x360 */
+  RESOLUTION_640x360_16_9_62 = 62,
+  /** 宽高比 4:3，分辨率 960x720 */
+  RESOLUTION_960x720_4_3_64 = 64,
+  /** 宽高比 16:9，分辨率 640x360 */
+  RESOLUTION_640x360_16_9_108 = 108,
+  /** 宽高比 16:9，分辨率 960x540 */
+  RESOLUTION_960x540_16_9_110 = 110,
+  /** 宽高比 16:9，分辨率 1280x720 */
+  RESOLUTION_1280x720_16_9_112 = 112,
+  /** 宽高比 16:9，分辨率 1920x1080 */
+  RESOLUTION_1920x1080_16_9_114 = 114,
+}
+
+/** 分辨率模式 */
+export enum VideoResolutionMode {
+  /** 横屏 */
+  LANDSCAPE,
+  /** 竖屏 */
+  PORTRAIT,
+}
+
+export interface VideoResolutionOptions {
+  /** 视频分辨率 */
+  resolution?: VideoResolution;
+  /** 分辨率模式 */
+  resolutionMode?: VideoResolutionMode;
+}
 
 export const useTUICallKit = createSharedComposable(() => {
   const toast = useToast();
@@ -124,20 +163,17 @@ export const useTUICallKit = createSharedComposable(() => {
   /**
    * 拨打电话（1v1通话）
    * @param {string[]} userIDList 被呼叫的用户列表
-   * @param {number} callMediaType 通话方式：1-语音通话 | 2-视频通话
+   * @param {CallMediaType} callMediaType 通话方式
    * @returns 是否拨打成功
    */
-  const callTo = (userIDList: string[], callMediaType: 1 | 2 = 1) => {
+  const callTo = (userIDList: string[], callMediaType: CallMediaType = CallMediaType.VOICE) => {
     return new Promise<boolean>((resolve, reject) => {
       if (!TUICallKitAccess.value) {
         toast.show("当前通话功能不可用");
         console.error("[TUICallKit]：callTo 用户未登录，当前通话功能不可用");
         return reject(new Error("用户未登录，当前通话功能不可用"));
       }
-      const options = {
-        userIDList,
-        callMediaType, // 语音通话(callMediaType = 1)、视频通话(callMediaType = 2)
-      };
+      const options = { userIDList, callMediaType };
       console.log("[TUICallKit]：callTo", options);
       try {
         uni.$TUICallKit.calls(options, (res: any) => {
@@ -236,9 +272,9 @@ export const useTUICallKit = createSharedComposable(() => {
   /**
    * 开启/关闭功能选项
    * @param {EnableOptions} options 选项
-   * @param {boolean} [options.muteMode] 是否开启静音模式
-   * @param {boolean} [options.floatWindow] 是否开启悬浮窗功能
-   * @param {boolean} [options.incomingBanner] 是否来电横幅显示
+   * @param {boolean} options.muteMode 是否开启静音模式
+   * @param {boolean} options.floatWindow 是否开启悬浮窗功能
+   * @param {boolean} options.incomingBanner 是否来电横幅显示
    * @returns 是否设置成功
    */
   const enable = (options: EnableOptions = {}) => {
@@ -247,9 +283,9 @@ export const useTUICallKit = createSharedComposable(() => {
         console.error("[TUICallKit]：enable 用户未登录，当前功能不可用");
         return reject(new Error("用户未登录，当前功能不可用"));
       }
-      console.log("[TUICallKit]：enable", options);
+      const { muteMode = false, floatWindow = false, incomingBanner = false } = options ?? {};
+      console.log("[TUICallKit]：enable", { muteMode, floatWindow, incomingBanner });
       try {
-        const { muteMode = false, floatWindow = false, incomingBanner = false } = options ?? {};
         uni.$TUICallKit.enableMuteMode(muteMode);
         uni.$TUICallKit.enableFloatWindow(floatWindow);
         uni.$TUICallKit.enableIncomingBanner(incomingBanner);
@@ -261,5 +297,47 @@ export const useTUICallKit = createSharedComposable(() => {
     });
   };
 
-  return { TUICallKitAccess, login, logout, setSelfInfo, callTo, joinTo, setCallingBell, enable };
+  /**
+   *  设置视频编码的编码参数
+   * @param {VideoResolutionOptions} options 选项
+   * @param {VideoResolution} options.resolution 视频分辨率
+   * @param {VideoResolutionMode} options.resolutionMode 分辨率模式
+   * @returns 是否设置成功
+   */
+  const setVideoResolutionParams = (options: VideoResolutionOptions = {}) => {
+    return new Promise<boolean>((resolve, reject) => {
+      const {
+        resolution = VideoResolution.RESOLUTION_640x360_16_9_108,
+        resolutionMode = VideoResolutionMode.PORTRAIT,
+      } = options ?? {};
+      console.log("[TUICallEngine]：setVideoResolutionParams", { resolution, resolutionMode });
+      try {
+        uni.$TUICallEngine.setVideoEncoderParams({ resolution, resolutionMode }, (res: any) => {
+          if (res.code === 0) {
+            console.log("[TUICallEngine]：setVideoResolutionParams success");
+            resolve(true);
+          } else {
+            console.error(
+              `[TUICallEngine]：setVideoResolutionParams failed, error code = ${res.code}, error message = ${res.msg}`
+            );
+            resolve(false);
+          }
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  return {
+    TUICallKitAccess,
+    login,
+    logout,
+    setSelfInfo,
+    callTo,
+    joinTo,
+    setCallingBell,
+    enable,
+    setVideoResolutionParams,
+  };
 });

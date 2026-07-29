@@ -1,4 +1,5 @@
 import { useToast } from "wot-design-uni";
+import { CallMediaType } from "./useTUICallKit";
 
 export const useTUICallKitEvent = () => {
   const toast = useToast();
@@ -24,6 +25,17 @@ export const useTUICallKitEvent = () => {
   /** 通话接通回调 */
   const onCallBegin = (res: any) => {
     console.log("[TUICallKitEvent]：onCallBegin", res);
+    if (res.callMediaType === CallMediaType.VIDEO) {
+      try {
+        console.log("[TUICallKitEvent]：onCallBegin 通话已建立，当前正在视频通话");
+        console.log("[TUICallKitEvent]：onCallBegin 开始设置视频编码参数");
+        tuicallkit.setVideoResolutionParams();
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.log("[TUICallKitEvent]：onCallBegin 通话已建立，当前正在语音通话");
+    }
   };
 
   /** 通话结束回调 */
@@ -108,8 +120,8 @@ export const useTUICallKitEvent = () => {
     console.log("[TUICallKitEvent]：CustomViewClickEvent", res);
   };
 
-  /** 注册监听事件 */
-  const addAllEventListener = () => {
+  /** 注册 TUICallKit 监听事件 */
+  const addAllEventListeners = () => {
     uni.$TUICallKitEvent.addEventListener("onError", onError);
     uni.$TUICallKitEvent.addEventListener("onCallReceived", onCallReceived);
     uni.$TUICallKitEvent.addEventListener("onCallCancelled", onCallCancelled);
@@ -130,37 +142,20 @@ export const useTUICallKitEvent = () => {
     uni.$TUICallKitEvent.addEventListener("CustomViewClickEvent", onCustomViewClickEvent);
   };
 
-  /** 移除监听事件 */
-  const removeAllEventListener = () => {
-    uni.$TUICallKitEvent.removeEventListener("onError", onError);
-    uni.$TUICallKitEvent.removeEventListener("onCallReceived", onCallReceived);
-    uni.$TUICallKitEvent.removeEventListener("onCallCancelled", onCallCancelled);
-    uni.$TUICallKitEvent.removeEventListener("onCallBegin", onCallBegin);
-    uni.$TUICallKitEvent.removeEventListener("onCallEnd", onCallEnd);
-    uni.$TUICallKitEvent.removeEventListener("onCallMediaTypeChanged", onCallMediaTypeChanged);
-    uni.$TUICallKitEvent.removeEventListener("onUserReject", onUserReject);
-    uni.$TUICallKitEvent.removeEventListener("onUserNoResponse", onUserNoResponse);
-    uni.$TUICallKitEvent.removeEventListener("onUserLineBusy", onUserLineBusy);
-    uni.$TUICallKitEvent.removeEventListener("onUserJoin", onUserJoin);
-    uni.$TUICallKitEvent.removeEventListener("onUserLeave", onUserLeave);
-    uni.$TUICallKitEvent.removeEventListener("onUserVideoAvailable", onUserVideoAvailable);
-    uni.$TUICallKitEvent.removeEventListener("onUserAudioAvailable", onUserAudioAvailable);
-    uni.$TUICallKitEvent.removeEventListener("onUserVoiceVolumeChanged", onUserVoiceVolumeChanged);
-    uni.$TUICallKitEvent.removeEventListener("onUserNetworkQualityChanged", onUserNetworkQualityChanged);
-    uni.$TUICallKitEvent.removeEventListener("onKickedOffline", onKickedOffline);
-    uni.$TUICallKitEvent.removeEventListener("onUserSigExpired", onUserSigExpired);
-    uni.$TUICallKitEvent.removeEventListener("CustomViewClickEvent", onCustomViewClickEvent);
+  /** 移除 TUICallKit 监听事件 */
+  const removeAllEventListeners = () => {
+    uni.$TUICallKitEvent.removeAllEventListeners();
   };
 
   onLoad(() => {
     // #ifdef APP-PLUS
-    addAllEventListener();
+    addAllEventListeners();
     // #endif
   });
 
   onUnload(() => {
     // #ifdef APP-PLUS
-    removeAllEventListener();
+    removeAllEventListeners();
     // #endif
   });
 
