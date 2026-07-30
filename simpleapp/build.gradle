@@ -1,5 +1,13 @@
 apply plugin: 'com.android.application'
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localProperties.load(new FileInputStream(localPropertiesFile))
+} else {
+    println "[警告]：local.properties 文件不存在"
+}
+
 android {
     compileSdkVersion 35
     buildToolsVersion '35.0.0'
@@ -17,15 +25,6 @@ android {
         }
     }
 
-    // 从根目录的 local.properties 读取签名配置
-    def localProperties = new Properties()
-    def localFile = rootProject.file('local.properties')
-    if (localFile.exists()) {
-        localProperties.load(new FileInputStream(localFile))
-    } else {
-        println "警告: local.properties 文件不存在，请创建并配置签名信息"
-    }
-    
     signingConfigs {
         config {
             keyAlias localProperties.getProperty('SIGN_KEY_ALIAS')
